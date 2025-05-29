@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Salones</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Gestión de Salones de Eventos</h1>
+
+  <form id="form-salon">
+    <input type="hidden" id="idSalon">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required>
+    <label for="capacidad">Capacidad:</label>
+    <input type="number" id="capacidad" required>
+    <label for="direccion">Dirección:</label>
+    <input type="text" id="direccion" required>
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" required>
+    <button type="submit">Guardar</button>
+  </form>
+
+  <table id="tabla-salones">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Capacidad</th>
+        <th>Dirección</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module">
+    import { inicializarLocalStorage, renderizarTabla } from './js/salones.js';
+    inicializarLocalStorage();
+    renderizarTabla();
+  </script>
+  <script src="js/salones.js" type="module"></script>
+</body>
+</html>

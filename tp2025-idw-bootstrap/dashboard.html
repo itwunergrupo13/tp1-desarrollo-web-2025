@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de Administración</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container py-4">
+    <h1 class="mb-4 text-center">Panel de Administración</h1>
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-danger" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab">Usuarios</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="salones-tab" data-bs-toggle="tab" data-bs-target="#salones" type="button" role="tab">Salones</button>
+      </li>
+    </ul>
+    <div class="tab-content pt-3" id="dashboardTabsContent">
+      <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+        <h3>Usuarios</h3>
+        <div id="usuarios-list" class="table-responsive"></div>
+      </div>
+      <div class="tab-pane fade" id="salones" role="tabpanel">
+        <h3>Salones</h3>
+        <div id="salones-list" class="table-responsive"></div>
+        <button class="btn btn-success mt-3" onclick="agregarSalon()">Agregar salón</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (!sessionStorage.getItem("accessToken")) {
+      alert("Debes iniciar sesión.");
+      location.href = "login.html";
+    }
+
+    const usuariosList = document.getElementById("usuarios-list");
+    const salonesList = document.getElementById("salones-list");
+
+    async function cargarUsuarios() {
+      const res = await fetch("https://dummyjson.com/users");
+      const data = await res.json();
+      const tabla = `<table class="table table-striped"><thead><tr><th>ID</th><th>Nombre</th><th>Email</th></tr></thead><tbody>${
+        data.users.map(u => `<tr><td>${u.id}</td><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td></tr>`).join("")
+      }</tbody></table>`;
+      usuariosList.innerHTML = tabla;
+    }
+
+    function cargarSalones() {
+      const salones = JSON.parse(localStorage.getItem("salones")) || [];
+      const tabla = `<table class="table table-striped"><thead><tr><th>Nombre</th><th>Ubicación</th><th>Acciones</th></tr></thead><tbody>${
+        salones.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.ubicacion}</td><td>
+        <button class="btn btn-sm btn-warning" onclick="editarSalon(${i})">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="eliminarSalon(${i})">Eliminar</button>
+        </td></tr>`).join("")
+      }</tbody></table>`;
+      salonesList.innerHTML = tabla;
+    }
+
+    function agregarSalon() {
+      const nombre = prompt("Nombre del salón:");
+      const ubicacion = prompt("Ubicación:");
+      if (!nombre || !ubicacion) return;
+      const salones = JSON.parse(localStorage.getItem("salones")) || [];
+      salones.push({ nombre, ubicacion });
+      localStorage.setItem("salones", JSON.stringify(salones));
+      cargarSalones();
+    }
+
+    function editarSalon(i) {
+      const salones = JSON.parse(localStorage.getItem("salones")) || [];
+      const nuevoNombre = prompt("Nuevo nombre:", salones[i].nombre);
+      const nuevaUbicacion = prompt("Nueva ubicación:", salones[i].ubicacion);
+      if (!nuevoNombre || !nuevaUbicacion) return;
+      salones[i] = { nombre: nuevoNombre, ubicacion: nuevaUbicacion };
+      localStorage.setItem("salones", JSON.stringify(salones));
+      cargarSalones();
+    }
+
+    function eliminarSalon(i) {
+      if (!confirm("¿Seguro que deseas eliminar este salón?")) return;
+      const salones = JSON.parse(localStorage.getItem("salones")) || [];
+      salones.splice(i, 1);
+      localStorage.setItem("salones", JSON.stringify(salones));
+      cargarSalones();
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      location.href = "login.html";
+    }
+
+    // Inicializar
+    cargarUsuarios();
+    cargarSalones();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

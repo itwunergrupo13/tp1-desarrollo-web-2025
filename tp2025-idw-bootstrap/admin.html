@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de administración</title>
+</head>
+<body>
+  <h1>Bienvenido al panel de administración</h1>
+  <script>
+    if (!sessionStorage.getItem("accessToken")) {
+      alert("Debes iniciar sesión primero.");
+      location.href = "login.html";
+    }
+  </script>
+  <button class="btn btn-outline-danger" onclick="sessionStorage.clear(); location.href='login.html';">Cerrar sesión</button>
+
+</body>
+</html>

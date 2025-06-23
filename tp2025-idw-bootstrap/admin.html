@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel de administración</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
 </head>
 <body>
-  <h1>Bienvenido al panel de administración</h1>
+  <h1>Panel de Administración</h1>
+  <div id="infoUsuario"></div>
+
   <script>
-    if (!sessionStorage.getItem("accessToken")) {
-      alert("Debes iniciar sesión primero.");
-      location.href = "login.html";
+    const token = sessionStorage.getItem("accessToken");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!token || !user) {
+      alert("Acceso denegado. Iniciá sesión.");
+      window.location.href = "login.html";
+    } else {
+      const nombre = user.nombre || user.firstName || user.username;
+      const info = `
+        <p>Hola, <strong>${nombre}</strong></p>
+        <p>Tipo de acceso: <strong>${user.rol === 'local' ? 'Login local simulado' : 'Login remoto con DummyJSON'}</strong></p>
+      `;
+      document.getElementById("infoUsuario").innerHTML = info;
     }
   </script>
-  <button class="btn btn-outline-danger" onclick="sessionStorage.clear(); location.href='login.html';">Cerrar sesión</button>
-
 </body>
 </html>

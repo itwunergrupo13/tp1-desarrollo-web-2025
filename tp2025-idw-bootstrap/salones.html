@@ -15,12 +15,22 @@
   </style>
 </head>
 <body>
-  <script>
-  if (!sessionStorage.getItem("accessToken")) {
-    alert("Debes iniciar sesión para acceder a esta página.");
-    location.href = "login.html";
-  }
-</script>
+   <script>
+    const token = sessionStorage.getItem("accessToken");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!token || !user) {
+      alert("Acceso denegado. Iniciá sesión.");
+      window.location.href = "login.html";
+    } else {
+      const infoDiv = document.getElementById("infoUsuario");
+      infoDiv.innerHTML = `<p>Bienvenido <strong>${user.nombre || user.firstName}</strong></p>`;
+
+      if (user.rol === "local") {
+        alert("Estás usando el login local simulado.");
+      }
+    }
+  </script>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">

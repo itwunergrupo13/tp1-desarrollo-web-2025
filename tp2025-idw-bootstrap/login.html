@@ -8,7 +8,7 @@
 </head>
 <body>
   <main class="container py-5">
-    <form id="loginForm" class="card p-4 mx-auto" style="max-width:400px;">
+    <form id="loginForm" class="card p-4 mx-auto" style="max-width: 400px;">
       <h2 class="mb-4 text-center">Iniciar sesión</h2>
       <div class="mb-3">
         <label for="username" class="form-label">Usuario</label>
@@ -23,44 +23,52 @@
     </form>
   </main>
 
+  <!-- JavaScript embebido -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("loginForm");
       const errorMsg = document.getElementById("errorMsg");
 
+      const fallbackUser = {
+        username: "admin",
+        password: "1234",
+        nombre: "Usuario Local",
+        rol: "local"
+      };
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        if (!username || !password) {
-          errorMsg.textContent = "Por favor, ingresa usuario y contraseña.";
-          errorMsg.classList.remove("d-none");
-          return;
-        }
-
         try {
+          // Intentar login remoto
           const res = await fetch("https://dummyjson.com/auth/login", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
           });
 
+          if (!res.ok) throw new Error("Fallo el login remoto");
+
           const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.message || "Credenciales inválidas");
-          }
-
           sessionStorage.setItem("accessToken", data.token);
           sessionStorage.setItem("user", JSON.stringify(data));
-          location.href = "admin.html";
+          console.log("Login remoto exitoso");
+          window.location.href = "salones.html";
         } catch (error) {
-          errorMsg.textContent = "⚠️ " + error.message;
-          errorMsg.classList.remove("d-none");
+          console.warn("Login remoto fallido, intentando login local");
+
+          if (username === fallbackUser.username && password === fallbackUser.password) {
+            const fakeToken = "local-fake-token";
+            sessionStorage.setItem("accessToken", fakeToken);
+            sessionStorage.setItem("user", JSON.stringify(fallbackUser));
+            console.log("Login local exitoso");
+            window.location.href = "salones.html";
+          } else {
+            errorMsg.textContent = "Usuario o contraseña inválidos.";
+            errorMsg.classList.remove("d-none");
+          }
         }
       });
     });

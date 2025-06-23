@@ -2,27 +2,37 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Administración</title>
 </head>
 <body>
-  <h1>Panel de Administración</h1>
-  <div id="infoUsuario"></div>
+  <h2>Bienvenido al Panel de Administración</h2>
+  <p id="welcome"></p>
+
+  <button onclick="goToSalones()">Ir a Salones</button>
+  <button onclick="goToUsuarios()">Mostrar usuarios</button>
+  <button onclick="logout()">Cerrar sesión</button>
 
   <script>
-    const token = sessionStorage.getItem("accessToken");
-    const user = JSON.parse(sessionStorage.getItem("user"));
+    const token = localStorage.getItem('token');
+    const userData = JSON.parse(localStorage.getItem('user'));
 
-    if (!token || !user) {
-      alert("Acceso denegado. Iniciá sesión.");
-      window.location.href = "login.html";
+    if (!token) {
+      window.location.href = 'admin.html';
     } else {
-      const nombre = user.nombre || user.firstName || user.username;
-      const info = `
-        <p>Hola, <strong>${nombre}</strong></p>
-        <p>Tipo de acceso: <strong>${user.rol === 'local' ? 'Login local simulado' : 'Login remoto con DummyJSON'}</strong></p>
-      `;
-      document.getElementById("infoUsuario").innerHTML = info;
+      document.getElementById('welcome').textContent = `Hola, ${userData.firstName} ${userData.lastName}`;
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+
+    function goToSalones() {
+      window.location.href = 'salones.html';
+    }
+
+    function goToUsuarios() {
+      window.location.href = 'usuarios.html';
     }
   </script>
 </body>

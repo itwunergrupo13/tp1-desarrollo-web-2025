@@ -55,7 +55,7 @@
           sessionStorage.setItem("accessToken", data.token);
           sessionStorage.setItem("user", JSON.stringify(data));
           console.log("Login remoto exitoso");
-          window.location.href = "salones.html";
+          window.location.href = "admin.html";
         } catch (error) {
           console.warn("Login remoto fallido, intentando login local");
 
@@ -64,7 +64,7 @@
             sessionStorage.setItem("accessToken", fakeToken);
             sessionStorage.setItem("user", JSON.stringify(fallbackUser));
             console.log("Login local exitoso");
-            window.location.href = "salones.html";
+            window.location.href = "admin.html";
           } else {
             errorMsg.textContent = "Usuario o contraseña inválidos.";
             errorMsg.classList.remove("d-none");

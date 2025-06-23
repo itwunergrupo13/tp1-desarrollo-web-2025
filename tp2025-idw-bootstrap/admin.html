@@ -13,17 +13,19 @@
   <button onclick="logout()">Cerrar sesión</button>
 
   <script>
-    const token = localStorage.getItem('token');
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const token = sessionStorage.getItem('accessToken');
+    const userData = JSON.parse(sessionStorage.getItem('user'));
 
-    if (!token) {
-      window.location.href = 'admin.html';
+    if (!token || !userData) {
+      alert("Acceso denegado. Iniciá sesión.");
+      window.location.href = 'login.html';
     } else {
-      document.getElementById('welcome').textContent = `Hola, ${userData.firstName} ${userData.lastName}`;
+      const nombre = userData.nombre || `${userData.firstName} ${userData.lastName}`;
+      document.getElementById('welcome').textContent = `Hola, ${nombre}`;
     }
 
     function logout() {
-      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = 'login.html';
     }
 
